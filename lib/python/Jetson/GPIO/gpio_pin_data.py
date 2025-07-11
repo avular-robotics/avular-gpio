@@ -31,8 +31,45 @@ JETSON_TX2_NX='JETSON_TX2_NX'
 JETSON_ORIN='JETSON_ORIN'
 JETSON_ORIN_NX='JETSON_ORIN_NX'
 JETSON_ORIN_NANO='JETSON_ORIN_NANO'
+VERTEX_1_3='VERTEX_1_3'
+VERTEX_1_4='VERTEX_1_4'
 
-JETSON_MODELS = [JETSON_TX1, JETSON_TX2, CLARA_AGX_XAVIER, JETSON_TX2_NX, JETSON_XAVIER, JETSON_NANO, JETSON_NX, JETSON_ORIN, JETSON_ORIN_NX, JETSON_ORIN_NANO]
+JETSON_MODELS = [JETSON_TX1, JETSON_TX2, CLARA_AGX_XAVIER, JETSON_TX2_NX, JETSON_XAVIER, JETSON_NANO, JETSON_NX, JETSON_ORIN, JETSON_ORIN_NX, JETSON_ORIN_NANO, VERTEX_1_3, VERTEX_1_4]
+
+TEGRA234_BASE = {
+    'A': 0,
+    'B': 8,
+    'C': 9,
+    'D': 17,
+    'E': 21,
+    'F': 29,
+    'G': 35,
+    'H': 43,
+    'I': 51,
+    'J': 58,
+    'K': 64,
+    'L': 72,
+    'M': 76,
+    'N': 84,
+    'P': 92,
+    'Q': 100,
+    'R': 108,
+    'X': 114,
+    'Y': 122,
+    'Z': 130,
+    'AC': 138,
+    'AD': 142,
+    'AE': 146,
+    'AF': 148,
+    'AG': 152,
+    # AON GPIOs
+    'AA': 0,
+    'BB': 8,
+    'CC': 12,
+    'DD': 20,
+    'EE': 23,
+    'GG': 31,
+}
 
 # These arrays contain tuples of all the relevant GPIO data for each Jetson
 # Platform. The fields are:
@@ -49,6 +86,40 @@ JETSON_MODELS = [JETSON_TX1, JETSON_TX2, CLARA_AGX_XAVIER, JETSON_TX2_NX, JETSON
 # - PWM ID within PWM chip
 # The values are used to generate dictionaries that map the corresponding pin
 # mode numbers to the Linux GPIO pin number and GPIO chip directory
+
+VERTEX_1_3_PIN_DEFS = [
+    
+]
+
+compats_vertex_1_3 = (
+    "avular,vertex-1-3",
+)
+
+VERTEX_1_4_PIN_DEFS = [
+    (TEGRA234_BASE['CC'] + 0, 'PCC.00', "tegra234-gpio-aon", 3, 3, 'HUB3_RST', 'GP06_SPI2_CLK', None, None),
+    (TEGRA234_BASE['CC'] + 1, 'PCC.01', "tegra234-gpio-aon", 4, 4, 'GPS_PPS', 'GP07_SPI2_MISO', None, None),
+    (TEGRA234_BASE['CC'] + 2, 'PCC.02', "tegra234-gpio-aon", 5, 5, 'CAM_RST', 'GP08_SPI2_MOSI', None, None),
+    (TEGRA234_BASE['CC'] + 3, 'PCC.03', "tegra234-gpio-aon", 6, 6, 'CAM3_TRIG', 'GP09_SPI2_CS_N', None, None),
+    # (TEGRA234_BASE['X'] + 3, 'PX.03', "tegra234-gpio", 14, 14, 'FAN', 'GP31_PWM3', None, None),
+    (TEGRA234_BASE['Y'] + 2, 'PY.02', "tegra234-gpio", 15, 15, 'CAN_TERM', 'GP38_SPI3_MOSI', None, None),
+    (TEGRA234_BASE['Z'] + 3, 'PZ.03', "tegra234-gpio", 16, 16, 'PPM', 'GP47_SPI1_CLK', None, None),
+    (TEGRA234_BASE['Z'] + 4, 'PZ.04', "tegra234-gpio", 17, 17, 'FRONT_12V_EN', 'GP48_SPI1_MISO', None, None),
+    (TEGRA234_BASE['Z'] + 5, 'PZ.05', "tegra234-gpio", 18, 18, 'FRONT_GPIO', 'GP49_SPI1_MOSI', None, None),
+    (TEGRA234_BASE['Z'] + 6, 'PZ.06', "tegra234-gpio", 19, 19, 'FRONT_12V_PG', 'GP50_SPI1_CS0_N', None, None),
+    (TEGRA234_BASE['P'] + 6, 'PP.06', "tegra234-gpio", 20, 20, 'HUB2_RST', 'GP58', None, None),
+    (TEGRA234_BASE['G'] + 6, 'PG.06', "tegra234-gpio", 7, 7, 'IO_UP', 'GP113_PWM7', '32e0000.pwm', 0),
+    (TEGRA234_BASE['H'] + 6, 'PH.06', "tegra234-gpio", 21, 21, 'CAM2_TRIG', 'GP121_UART4_CTS_N', None, None),
+    (TEGRA234_BASE['AC'] + 0, 'PAC.00', "tegra234-gpio", 22, 22, 'CAM0_TRIG', 'GP161_SPI5_CLK', None, None),
+    (TEGRA234_BASE['AC'] + 6, 'PAC.06', "tegra234-gpio", 23, 23, 'WATCHDOG', 'GP167', None, None),
+    (TEGRA234_BASE['A'] + 4, 'PA.04', "tegra234-gpio", 24, 24, 'EXT_12V_PG', 'GP206_DAP4_CLK', None, None),
+    (TEGRA234_BASE['A'] + 5, 'PA.05', "tegra234-gpio", 25, 25, 'EXT_12V_EN', 'GP207_DAP4_DOUT', None, None),
+    (TEGRA234_BASE['A'] + 6, 'PA.06', "tegra234-gpio", 26, 26, 'EXT_PG', 'GP208_DAP4_DIN', None, None),
+    (TEGRA234_BASE['A'] + 7, 'PA.07', "tegra234-gpio", 27, 27, 'EXT_EN', 'GP209_DAP4_FS', None, None),
+]
+
+compats_vertex_1_4 = (
+    "avular,vertex-1-4",
+)
 
 JETSON_ORIN_NX_PIN_DEFS = [
     (144, 'PAC.06', "tegra234-gpio", 7, 4, 'GPIO09', 'GP167', None, None),
@@ -469,6 +540,28 @@ jetson_gpio_data = {
             'PROCESSOR': 'ARM A57'
         }
     ),
+    VERTEX_1_3: (
+        VERTEX_1_3_PIN_DEFS,
+        {
+            'P1_REVISION': 1,
+            'RAM': '16384M',
+            'REVISION': 'Unknown',
+            'TYPE': 'VERTEX_1_3',
+            'MANUFACTURER': 'NVIDIA',
+            'PROCESSOR': 'ARM A78'
+        }
+    ),
+    VERTEX_1_4: (
+        VERTEX_1_4_PIN_DEFS,
+        {
+            'P1_REVISION': 1,
+            'RAM': '16384M',
+            'REVISION': 'Unknown',
+            'TYPE': 'VERTEX_1_3',
+            'MANUFACTURER': 'NVIDIA',
+            'PROCESSOR': 'ARM A78'
+        }
+    )
 }
 
 
@@ -593,6 +686,10 @@ def get_model():
         elif matches(compats_jetson_orins_nano):
             warn_if_not_carrier_board('3509', '3768')
             return JETSON_ORIN_NANO
+        elif matches(compats_vertex_1_3):
+            return VERTEX_1_3
+        elif matches(compats_vertex_1_4):
+            return VERTEX_1_4
 
     # get model info from the environment variables for docker containers
     model_name = os.environ.get("JETSON_MODEL_NAME")
@@ -661,4 +758,3 @@ def get_data():
     }
 
     return model, jetson_info, channel_data
-
