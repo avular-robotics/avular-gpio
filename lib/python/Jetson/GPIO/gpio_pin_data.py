@@ -91,7 +91,6 @@ VERTEX_1_3_PIN_DEFS = [
     (TEGRA234_BASE['CC'] + 0, 'PCC.00', "tegra234-gpio-aon", 1, 1, 'HUB3_RST', 'GP06_SPI2_CLK', None, None),
     (TEGRA234_BASE['CC'] + 1, 'PCC.01', "tegra234-gpio-aon", 2, 2, 'GPS_PPS', 'GP07_SPI2_MISO', None, None),
     (TEGRA234_BASE['CC'] + 2, 'PCC.02', "tegra234-gpio-aon", 3, 3, 'CAM_RST', 'GP08_SPI2_MOSI', None, None),
-    (TEGRA234_BASE['Y'] + 2, 'PY.02', "tegra234-gpio", 5, 5, 'CAN_TERM', 'GP38_SPI3_MOSI', None, None),
     (TEGRA234_BASE['P'] + 6, 'PP.06', "tegra234-gpio", 10, 10, 'HUB2_RST', 'GP58', None, None),
     (TEGRA234_BASE['G'] + 6, 'PG.06', "tegra234-gpio", 12, 12, 'IO_UP', 'GP113_PWM7', '32e0000.pwm', 0),
     (TEGRA234_BASE['AC'] + 6, 'PAC.06', "tegra234-gpio", 15, 15, 'WATCHDOG', 'GP167', None, None),
