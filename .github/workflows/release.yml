@@ -15,16 +15,24 @@ jobs:
           path: avular-gpio
 
       - name: Install dependencies
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
           sudo apt update
-          sudo apt install build-essential debhelper dh-python python3-all python3-all-dev python3-setuptools devscripts
+          sudo apt install -y build-essential debhelper dh-python python3-all python3-all-dev python3-setuptools devscripts
 
       - name: Create Debian source package
         run: |
-          tar -czvf avular-gpio.orig.tar.gz --exclude-vcs --exclude=avular-gpio/debian avular-gpio/
+            cd avular-gpio
+            VERSION=$(dpkg-parsechangelog --show-field Version | sed 's/-[^-]*$//')
+            cd ..
+            echo "Creating source package with version: $VERSION"
+            tar -czvf avular-gpio_${VERSION}.orig.tar.gz --exclude-vcs --exclude=avular-gpio/debian avular-gpio/
 
       - name: Build package
         run: |
+          ls -l
+          echo "Building package..."
           cd avular-gpio
           debuild -us -uc
 
