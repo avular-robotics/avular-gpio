@@ -3,3 +3,13 @@ dist/
 venv-*/
 *.egg-info/
 .*.swp
+
+debian/.debhelper/
+debian/tmp/
+debian/*/
+debian/debhelper-build-stamp
+debian/files
+*.debhelper
+*.log
+*.substvars
+.pybuild/

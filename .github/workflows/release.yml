@@ -1,0 +1,47 @@
+name: release
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    runs-on: [self-hosted, micro-linux]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          path: avular-gpio
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install build-essential debhelper dh-python python3-all python3-all-dev python3-setuptools devscripts
+
+      - name: Create Debian source package
+        run: |
+          tar -czvf avular-gpio.orig.tar.gz --exclude-vcs --exclude=avular-gpio/debian avular-gpio/
+
+      - name: Build package
+        run: |
+          cd avular-gpio
+          debuild -us -uc
+
+      - name: Create artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: avular-gpio-packages
+          path: |
+            *.deb
+
+  release-stable:
+    needs: build
+    uses: avular-robotics/avular_ci/.github/workflows/upload-packages.yml@latest
+    secrets: inherit
+    strategy:
+      matrix:
+        environment: [stable, nightly, unstable]
+    with:
+      artifact-name: avular-gpio-packages
+      environment: ${{ matrix.environment }}

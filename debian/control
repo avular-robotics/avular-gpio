@@ -13,13 +13,13 @@ Homepage: https://github.com/avular-robotics/avular-gpio
 X-Python3-Version: >= 3.2
 
 Package: avular-gpio-common
-Architecture: arm64
+Architecture: all
 Depends:
  ${misc:Depends},
 Description: Avular GPIO library package (common files)
 
 Package: python3-avular-gpio
-Architecture: arm64
+Architecture: all
 Depends:
  ${python3:Depends},
  ${misc:Depends},

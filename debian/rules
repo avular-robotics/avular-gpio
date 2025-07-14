@@ -20,7 +20,7 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-export PYBUILD_NAME=jetson-gpio
+export PYBUILD_NAME=avular-gpio
 export PYBUILD_DISABLE=test
 export PYBUILD_AFTER_INSTALL=find '{destdir}/{install_dir}/' -name 99-gpio.rules | xargs rm
 
@@ -28,4 +28,4 @@ export PYBUILD_AFTER_INSTALL=find '{destdir}/{install_dir}/' -name 99-gpio.rules
 	dh $@  --with python3 --buildsystem=pybuild
 
 override_dh_installdocs:
-	dh_installdocs -X run_sample.sh LICENSE.txt README.md samples --link-doc=jetson-gpio-common
+	dh_installdocs -X run_sample.sh LICENSE.txt README.md samples --link-doc=avular-gpio-common
