@@ -1,14 +1,16 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: jetson-gpio
-Source: https://github.com/NVIDIA/jetson-gpio
+Upstream-Name: avular-gpio
+Source: https://github.com/avular-robotics/avular-gpio
 
 Files: *
 Copyright: 2012-2016 Ben Croston
 Copyright: 2019 NVIDIA CORPORATION
+Copyright: 2025 Avular Robotics
 License: Expat
 
 Files: debian/*
 Copyright: 2019 NVIDIA CORPORATION
+Copyright: 2025 Avular Robotics
 License: Expat
 
 License: Expat

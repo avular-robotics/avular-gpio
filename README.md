@@ -1,19 +1,19 @@
-# Jetson.GPIO - Linux for Tegra
+# Avular.GPIO - Linux for Tegra
 
 Jetson TX1, TX2, AGX Xavier, and Nano development boards contain a 40 pin GPIO
 header, similar to the 40 pin header in the Raspberry Pi. These GPIOs can be
 controlled for digital input and output using the Python library provided in the
-Jetson GPIO Library package. The library has the same API as the RPi.GPIO
+Avular GPIO Library package. The library has the same API as the RPi.GPIO
 library for Raspberry Pi in order to provide an easy way to move applications
 running on the Raspberry Pi to the Jetson board.
 
-This document walks through what is contained in The Jetson GPIO library
+This document walks through what is contained in The Avular GPIO library
 package, how to configure the system and run the provided sample applications,
 and the library API.
 
 # Package Components
 
-In addition to this document, the Jetson GPIO library package contains the
+In addition to this document, the Avular GPIO library package contains the
 following:
 
 1. The `lib/python/` subdirectory contains the Python modules that implement all
@@ -32,13 +32,13 @@ respectively.
 
 # Installation
 
-These are the way to install Jetson.GPIO python modules on your system. For the samples applications, please clone this repository to your system. 
+These are the way to install Avular.GPIO python modules on your system. For the samples applications, please clone this repository to your system. 
 
 ## Using pip
 
 The easiest way to install this library is using `pip`:
 ```shell
-sudo pip install Jetson.GPIO
+sudo pip install Avular.GPIO
 ```
 
 ## Manual download 
@@ -53,7 +53,7 @@ sudo python3 setup.py install
 
 # Setting User Permissions
 
-In order to use the Jetson GPIO Library, the correct user permissions/groups must
+In order to use the Avular GPIO Library, the correct user permissions/groups must
 be set first.
 
 Create a new gpio user group. Then add your user to the newly created group.
@@ -65,15 +65,15 @@ sudo usermod -a -G gpio your_user_name
 Install custom udev rules by copying the 99-gpio.rules file into the rules.d
 directory.
 
-If you have downloaded the source to Jetson.GPIO:
+If you have downloaded the source to Avular.GPIO:
 ```shell
-sudo cp lib/python/Jetson/GPIO/99-gpio.rules /etc/udev/rules.d/
+sudo cp lib/python/Avular/GPIO/99-gpio.rules /etc/udev/rules.d/
 ```
 
-If you installed Jetson.GPIO from a package, e.g. using pip into a virtual
+If you installed Avular.GPIO from a package, e.g. using pip into a virtual
 environment:
 ```shell
-sudo cp venv/lib/pythonNN/site-packages/Jetson/GPIO/99-gpio.rules /etc/udev/rules.d/
+sudo cp venv/lib/pythonNN/site-packages/Avular/GPIO/99-gpio.rules /etc/udev/rules.d/
 ```
 
 For the new rule to take place, you either need to reboot or reload the udev
@@ -116,12 +116,12 @@ and a second LED and current limiting resistor connected to pin 13. The
 application slowly blinks the first LED continuously and rapidly blinks the
 second LED five times only when the button is pressed.
 
-To run these sample applications if Jetson.GPIO is added to the PYTHONPATH:
+To run these sample applications if Avular.GPIO is added to the PYTHONPATH:
 ```shell
 python3 <name_of_application_to_run>
 ```
 
-Alternatively, if Jetson.GPIO is not added to the PYTHONPATH, the `run_sample.sh`
+Alternatively, if Avular.GPIO is not added to the PYTHONPATH, the `run_sample.sh`
 script can be used to run these sample applications. This can be done with the
 following command when in the samples/ directory:
 ```shell
@@ -136,23 +136,23 @@ The usage of the script can also be viewed by using:
 
 # Complete library API
 
-The Jetson GPIO library provides all public APIs provided by the RPi.GPIO
+The Avular GPIO library provides all public APIs provided by the RPi.GPIO
 library. The following discusses the use of each API:
 
 #### 1. Importing the libary
 
-To import the Jetson.GPIO module use:
+To import the Avular.GPIO module use:
 ```python
-import Jetson.GPIO as GPIO
+import Avular.GPIO as GPIO
 ```
 
 This way, you can refer to the module as GPIO throughout the rest of the
 application. The module can also be imported using the name RPi.GPIO instead of
-Jetson.GPIO for existing code using the RPi library.
+Avular.GPIO for existing code using the RPi library.
 
 #### 2. Pin numbering
 
-The Jetson GPIO library provides four ways of numbering the I/O pins. The first
+The Avular GPIO library provides four ways of numbering the I/O pins. The first
 two correspond to the modes provided by the RPi.GPIO library, i.e BOARD and BCM
 which refer to the pin number of the 40 pin GPIO header and the Broadcom SoC
 GPIO numbers respectively. The remaining two modes, CVM and TEGRA_SOC use
@@ -182,7 +182,7 @@ None.
 #### 3. Warnings
 
 It is possible that the GPIO you are trying to use is already being used
-external to the current application. In such a condition, the Jetson GPIO
+external to the current application. In such a condition, the Avular GPIO
 library will warn you if the GPIO being used is configured to anything but the
 default direction (input). It will also warn you if you try cleaning up before
 setting up the mode and channels. To disable warnings, call:
@@ -190,8 +190,8 @@ setting up the mode and channels. To disable warnings, call:
 GPIO.setwarnings(False)
 ```
 
-Additionally, Jetson.GPIO uses **warnings** module to issue warning. Therefore,
-you can control the warning message using [Python Standard Library - warnings](https://docs.python.org/3/library/warnings.html#the-warnings-filter) 
+Additionally, Avular.GPIO uses **warnings** module to issue warning. Therefore,
+you can control the warning message using [Python Standard Library - warnings](https://docs.python.org/3/library/warnings.html#the-warnings-filter)
 
 #### 4. Set up a channel
 
@@ -411,24 +411,24 @@ The function returns either GPIO.IN or GPIO.OUT.
 
 See `samples/simple_pwm.py` for details on how to use PWM channels.
 
-The Jetson.GPIO library supports PWM only on pins with attached hardware PWM
-controllers. Unlike the RPi.GPIO library, the Jetson.GPIO library does not
+The Avular.GPIO library supports PWM only on pins with attached hardware PWM
+controllers. Unlike the RPi.GPIO library, the Avular.GPIO library does not
 implement Software emulated PWM. Jetson Nano supports 2 PWM channels, and
 Jetson AGX Xavier supports 3 PWM channels. Jetson TX1 and TX2 do not support
 any PWM channels.
 
 The system pinmux must be configured to connect the hardware PWM controlller(s)
 to the relevant pins. If the pinmux is not configured, PWM signals will not
-reach the pins! The Jetson.GPIO library does not dynamically modify the pinmux
+reach the pins! The Avular.GPIO library does not dynamically modify the pinmux
 configuration to achieve this. Read the L4T documentation for details on how to
 configure the pinmux.
 
 
-# Using the Jetson GPIO library from a docker container
-The following describes how to use the Jetson GPIO library from a docker container. 
+# Using the Avular GPIO library from a docker container
+The following describes how to use the Avular GPIO library from a docker container.
 
 ## Building a docker image
-`samples/docker/Dockerfile` is a sample Dockerfile for the Jetson GPIO library. The following command will build a docker image named `testimg` from it. 
+`samples/docker/Dockerfile` is a sample Dockerfile for the Avular GPIO library. The following command will build a docker image named `testimg` from it.
 
 ```shell
 sudo docker image build -f samples/docker/Dockerfile -t testimg .
