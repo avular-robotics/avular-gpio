@@ -19,7 +19,7 @@
 # DEALINGS IN THE SOFTWARE.
 
 from setuptools import setup
-from .lib.python.Avular.GPIO import VERSION
+from lib.python.Avular.GPIO import VERSION
 
 classifiers = ['Operating System :: POSIX :: Linux',
                'License :: OSI Approved :: MIT License',
