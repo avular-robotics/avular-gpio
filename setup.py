@@ -19,6 +19,7 @@
 # DEALINGS IN THE SOFTWARE.
 
 from setuptools import setup
+from .lib.python.Avular.GPIO import VERSION
 
 classifiers = ['Operating System :: POSIX :: Linux',
                'License :: OSI Approved :: MIT License',
@@ -28,7 +29,7 @@ classifiers = ['Operating System :: POSIX :: Linux',
                'Topic :: System :: Hardware']
 
 setup(name                          = 'Avular.GPIO',
-      version                       = '3.0.0',
+      version                       = VERSION,
       author                        = 'Avular',
       author_email                  = 'support@avular.com',
       description                   = 'A module to control Jetson GPIO channels',
