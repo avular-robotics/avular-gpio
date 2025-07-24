@@ -1,3 +1,9 @@
+avular-gpio (3.1.0-1) jammy; urgency=medium
+
+  * Add support for origin
+
+ -- Robbert-Jan de Jager <rj.jager@avular.com>  Thu, 24 Jul 2025 13:35:02 +0200
+
 avular-gpio (3.0.0-1) jammy; urgency=medium
 
   * Add support for avular platforms
