@@ -24,7 +24,7 @@ import threading
 import time
 import warnings
 
-import RPi.GPIO as GPIO
+import Avular.GPIO as GPIO
 
 # If a board has PWM support, the PWM tests expect 'out_a' to be PWM-capable.
 pin_datas = {

@@ -22,7 +22,7 @@
 from __future__ import print_function
 import sys
 
-import RPi.GPIO as GPIO
+import Avular.GPIO as GPIO
 
 pin_datas = {
     'JETSON_XAVIER': {

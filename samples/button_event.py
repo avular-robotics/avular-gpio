@@ -26,7 +26,7 @@
 # press event instead of continuously checking the value of the pin in order to
 # reduce CPU usage.
 
-import RPi.GPIO as GPIO
+import Avular.GPIO as GPIO
 import time
 
 # Pin Definitons:

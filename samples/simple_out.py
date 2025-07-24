@@ -19,7 +19,7 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-import RPi.GPIO as GPIO
+import Avular.GPIO as GPIO
 import time
 
 # Pin Definitions
