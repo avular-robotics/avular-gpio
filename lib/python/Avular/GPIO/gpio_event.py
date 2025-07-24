@@ -44,7 +44,7 @@ import select
 import ctypes
 import time
 
-from Jetson.GPIO import gpio_cdev as cdev
+from Avular.GPIO import gpio_cdev as cdev
 from datetime import datetime
 
 try:

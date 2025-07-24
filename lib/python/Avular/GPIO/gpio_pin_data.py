@@ -638,7 +638,7 @@ def warn_if_not_carrier_board(*carrier_boards):
     if not found:
         msg = """\
 WARNING: Carrier board is not from a Jetson Developer Kit.
-WARNNIG: Jetson.GPIO library has not been verified with this carrier board,
+WARNING: Avular.GPIO library has not been verified with this carrier board,
 WARNING: and in fact is unlikely to work correctly.
 """
         sys.stderr.write(msg)

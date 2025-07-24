@@ -19,9 +19,9 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-from Jetson.GPIO import gpio_event as event
-from Jetson.GPIO import gpio_pin_data
-from Jetson.GPIO import gpio_cdev
+from Avular.GPIO import gpio_event as event
+from Avular.GPIO import gpio_pin_data
+from Avular.GPIO import gpio_cdev
 import os
 import warnings
 import time
@@ -342,7 +342,7 @@ def setup(channels, direction, pull_up_down=_Default(PUD_OFF), initial=None, con
 
     # check if pullup/down value is specified and/or valid
     if pull_up_down_explicit:
-        warnings.warn("Jetson.GPIO ignores setup()'s pull_up_down parameter")
+        warnings.warn("Avular.GPIO ignores setup()'s pull_up_down parameter")
     if (pull_up_down != PUD_OFF and pull_up_down != PUD_UP and
             pull_up_down != PUD_DOWN):
         raise ValueError("Invalid value for pull_up_down; should be one of"

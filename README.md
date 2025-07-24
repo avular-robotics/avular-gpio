@@ -508,7 +508,7 @@ Within the documentation, relevant topics may be found by searching for e.g.:
 # Creating a release
 To create a new release of the Avular.GPIO library, follow these steps:
 
-1. Update the version number in `lib/python/Avular/GPIO/__init__.py`
+1. Update the version number in `setup.py`
 2. Setup your name and email environment variables: `export EMAIL="<email>" NAME="<name>"`
 3. Update the changelog in `debian/changelog` by using the `dch -v "<version>-<debian_revision>" "<msg>" -D jammy` command
 4. Create a git commit with the changes made in the previous steps. i.e. `git add --all && git commit -m "chore: release <version>"`
