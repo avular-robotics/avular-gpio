@@ -1,3 +1,9 @@
+avular-gpio (3.2.0-1) UNRELEASED; urgency=medium
+
+  * Rename pins to more consistent
+
+ -- Robbert-Jan de Jager <rj.jager@avular.com>  Wed, 26 Nov 2025 14:47:29 +0100
+
 avular-gpio (3.1.0-1) jammy; urgency=medium
 
   * Add support for origin

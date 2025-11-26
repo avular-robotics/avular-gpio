@@ -32,7 +32,7 @@ classifiers = ['Operating System :: POSIX :: Linux',
                'Topic :: System :: Hardware']
 
 setup(name                          = 'Avular.GPIO',
-      version                       = '3.1.0',
+      version                       = '3.2.0',
       author                        = 'Avular',
       author_email                  = 'support@avular.com',
       description                   = 'A module to control Jetson GPIO channels',
