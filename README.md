@@ -1,145 +1,19 @@
-# Avular.GPIO - Linux for Tegra
+# Avular.GPIO Python library
 
-Jetson TX1, TX2, AGX Xavier, and Nano development boards contain a 40 pin GPIO
-header, similar to the 40 pin header in the Raspberry Pi. These GPIOs can be
-controlled for digital input and output using the Python library provided in the
-Avular GPIO Library package. The library has the same API as the RPi.GPIO
-library for Raspberry Pi in order to provide an easy way to move applications
-running on the Raspberry Pi to the Jetson board.
+The Avular.GPIO Python library, based on the [Jetson GPIO library](https://github.com/NVIDIA/jetson-gpio/tree/master), allows control of GPIO pins. This library has the same API as the popular RPi.GPIO library for Raspberry Pi.
 
-This document walks through what is contained in The Avular GPIO library
-package, how to configure the system and run the provided sample applications,
-and the library API.
+This document covers what is in the Avular GPIO library package, how to configure the system and run sample applications, and the library API.
 
-# Package Components
+## Installation
 
-In addition to this document, the Avular GPIO library package contains the
-following:
+The Avular GPIO library is pre-installed on the Vertex One Jetson module images, so no installation is necessary.
 
-1. The `lib/python/` subdirectory contains the Python modules that implement all
-library functionality. The gpio.py module is the main component that will be
-imported into an application and provides the needed APIs. The `gpio_event.py`
-and `gpio_pin_data.py` modules are used by the `gpio.py` module and must not be
-imported directly in to an application.
-
-2. The `samples/` subdirectory contains sample applications to help in getting
-familiar with the library API and getting started on an application. The
-`simple_input.py` and `simple_output.py` applications show how to perform read
-and write to a GPIO pin respectively, while the `button_led.py`,
-`button_event.py` and `button_interrupt.py` show how a button press may be used
-to blink an LED using busy-waiting, blocking wait and interrupt callbacks
-respectively.
-
-# Installation
-
-These are the way to install Avular.GPIO python modules on your system. For the samples applications, please clone this repository to your system. 
-
-## Using pip
-
-The easiest way to install this library is using `pip`:
-```shell
-sudo pip install Avular.GPIO
-```
-
-## Manual download 
-
-You may clone this git repository, or download a copy of it as an archive file
-and decompress it. You may place the library files anywhere you like on your
-system. You may use the library directly from this directory by manually
-setting `PYTHONPATH`, or install it using `setup.py`:
-```shell
-sudo python3 setup.py install
-```
-
-# Setting User Permissions
-
-In order to use the Avular GPIO Library, the correct user permissions/groups must
-be set first.
-
-Create a new gpio user group. Then add your user to the newly created group.
-```shell
-sudo groupadd -f -r gpio
-sudo usermod -a -G gpio your_user_name
-```
-
-Install custom udev rules by copying the 99-gpio.rules file into the rules.d
-directory.
-
-If you have downloaded the source to Avular.GPIO:
-```shell
-sudo cp lib/python/Avular/GPIO/99-gpio.rules /etc/udev/rules.d/
-```
-
-If you installed Avular.GPIO from a package, e.g. using pip into a virtual
-environment:
-```shell
-sudo cp venv/lib/pythonNN/site-packages/Avular/GPIO/99-gpio.rules /etc/udev/rules.d/
-```
-
-For the new rule to take place, you either need to reboot or reload the udev
-rules by running:
-```shell
-sudo udevadm control --reload-rules && sudo udevadm trigger
-```
-
-# Running the sample scripts
-
-With the permissions set as needed, the sample applications provided in the
-`samples/` directory can be used. The following describes the operation of each
-application:
-
-1. `simple_input.py`: This application uses the BCM pin numbering mode and reads
-the value at pin 12 of the 40 pin header and prints the value to the
-screen.
-
-2. `simple_out.py`: This application uses the BCM pin numbering mode from
-Raspberry Pi and outputs alternating high and low values at BCM pin 18 (or
-board pin 12 on the header) every 2 seconds.
-
-3. `button_led.py`: This application uses the BOARD pin numbering. It requires a
-button connected to pin 18 and GND, a pull-up resistor connecting pin 18
-to 3V3 and an LED and current limiting resistor connected to pin 12. The
-application reads the button state and keeps the LED on for 1 second every
-time the button is pressed.
-
-4. `button_event.py`: This application uses the BOARD pin numbering. It requires a
-button connected to pin 18 and GND, a pull-up resistor connecting the button
-to 3V3 and an LED and current limiting resistor connected to pin 12. The
-application performs the same function as the button_led.py but performs a
-blocking wait for the button press event instead of continuously checking the
-value of the pin in order to reduce CPU usage.
-
-5. `button_interrupt.py`: This application uses the BOARD pin numbering. It
-requires a button connected to pin 18 and GND, a pull-up resistor connecting
-the button to 3V3, an LED and current limiting resistor connected to pin 12
-and a second LED and current limiting resistor connected to pin 13. The
-application slowly blinks the first LED continuously and rapidly blinks the
-second LED five times only when the button is pressed.
-
-To run these sample applications if Avular.GPIO is added to the PYTHONPATH:
-```shell
-python3 <name_of_application_to_run>
-```
-
-Alternatively, if Avular.GPIO is not added to the PYTHONPATH, the `run_sample.sh`
-script can be used to run these sample applications. This can be done with the
-following command when in the samples/ directory:
-```shell
-./run_sample.sh <name_of_application_to_run>
-```
-
-The usage of the script can also be viewed by using:
-```shell
-./run_sample.sh -h
-./run_sample.sh --help
-```
-
-# Complete library API
+## Complete library API
 
 The Avular GPIO library provides all public APIs provided by the RPi.GPIO
 library. The following discusses the use of each API:
 
-#### 1. Importing the libary
+### 1. Importing the library
 
 To import the Avular.GPIO module use:
 ```python
@@ -147,58 +21,43 @@ import Avular.GPIO as GPIO
 ```
 
 This way, you can refer to the module as GPIO throughout the rest of the
-application. The module can also be imported using the name RPi.GPIO instead of
-Avular.GPIO for existing code using the RPi library.
+application.
 
-#### 2. Pin numbering
+### 2. Pin numbering
+While the standard Jetson GPIO library provides multiple ways of numbering I/O pins, the only sensible way to access GPIO pins on the Vertex One platform is to use the payload pin names.
 
-The Avular GPIO library provides four ways of numbering the I/O pins. The first
-two correspond to the modes provided by the RPi.GPIO library, i.e BOARD and BCM
-which refer to the pin number of the 40 pin GPIO header and the Broadcom SoC
-GPIO numbers respectively. The remaining two modes, CVM and TEGRA_SOC use
-strings instead of numbers which correspond to signal names on the CVM/CVB
-connector and the Tegra SoC respectively.
 
 To specify which mode you are using (mandatory), use the following function
 call:
 ```python
-GPIO.setmode(GPIO.BOARD)
-# or
-GPIO.setmode(GPIO.BCM)
-# or
 GPIO.setmode(GPIO.CVM)
-# or
-GPIO.setmode(GPIO.TEGRA_SOC)
 ```
 
-To check which mode has be set, you can call:
+To check which mode has been set, you can call:
 ```python
 mode = GPIO.getmode()
 ```
 
-The mode must be one of GPIO.BOARD, GPIO.BCM, GPIO.CVM, GPIO.TEGRA_SOC or
-None.
+### 3. Warnings
 
-#### 3. Warnings
+If a GPIO you are trying to use is already being used outside the current application, 
+the Avular GPIO library will warn you if the GPIO is configured to anything other than the default direction (input). 
+It will also warn you if you try cleaning up before setting up the mode and channels. 
+To disable warnings, call:
 
-It is possible that the GPIO you are trying to use is already being used
-external to the current application. In such a condition, the Avular GPIO
-library will warn you if the GPIO being used is configured to anything but the
-default direction (input). It will also warn you if you try cleaning up before
-setting up the mode and channels. To disable warnings, call:
 ```python
 GPIO.setwarnings(False)
 ```
 
-Additionally, Avular.GPIO uses **warnings** module to issue warning. Therefore,
-you can control the warning message using [Python Standard Library - warnings](https://docs.python.org/3/library/warnings.html#the-warnings-filter)
+Additionally, Avular.GPIO uses the **warnings** module to issue warnings. 
+You can control the warning message using [Python Standard Library - warnings](https://docs.python.org/3/library/warnings.html#the-warnings-filter)
 
-#### 4. Set up a channel
+### 4. Set up a channel
 
 The GPIO channel must be set up before use as input or output. To configure
 the channel as input, call:
 ```python
-# (where channel is based on the pin numbering mode discussed above)
+# (where channel is based on the pin name as discussed above)
 GPIO.setup(channel, GPIO.IN)
 ```
 
@@ -212,15 +71,7 @@ It is also possible to specify an initial value for the output channel:
 GPIO.setup(channel, GPIO.OUT, initial=GPIO.HIGH)
 ```
 
-When setting up a channel as output, it is also possible to set up more than one
-channel at once:
-```python
-# add as many as channels as needed. You can also use tuples: (18,12,13)
-channels = [18, 12, 13]
-GPIO.setup(channels, GPIO.OUT)
-```
-
-#### 5. Input
+### 5. Input
 
 To read the value of a channel, use:
 
@@ -230,7 +81,7 @@ GPIO.input(channel)
 
 This will return either GPIO.LOW or GPIO.HIGH.
 
-#### 6. Output
+### 6. Output
 
 To set the value of a pin configured as output, use:
 
@@ -240,34 +91,15 @@ GPIO.output(channel, state)
 
 where state can be GPIO.LOW or GPIO.HIGH.
 
-You can also output to a list or tuple of channels:
+### 7. Clean up
 
-```python
-channels = [18, 12, 13] # or use tuples
-GPIO.output(channels, GPIO.HIGH) # or GPIO.LOW
-# set first channel to LOW and rest to HIGH
-GPIO.output(channels, (GPIO.LOW, GPIO.HIGH, GPIO.HIGH))
-```
-
-#### 7. Clean up
-
-At the end of the program, it is good to clean up the channels so that all pins
-are set in their default state. To clean up all channels used, call:
+At the end of the program, clean up the channels to reset all pins to their default state. To clean up all channels, call:
 
 ```python
 GPIO.cleanup()
 ```
 
-If you don't want to clean all channels, it is also possible to clean up
-individual channels or a list or tuple of channels:
-
-```python
-GPIO.cleanup(chan1) # cleanup only chan1
-GPIO.cleanup([chan1, chan2]) # cleanup only chan1 and chan2
-GPIO.cleanup((chan1, chan2))  # does the same operation as previous statement
-```
-
-#### 8. Jetson Board Information and library version
+### 8. Jetson Board Information and library version
 
 To get information about the Jetson module, use/read:
 
@@ -287,23 +119,22 @@ GPIO.VERSION
 
 This provides a string with the X.Y.Z version format.
 
-#### 9. Interrupts
+### 9. Interrupts
 
 Aside from busy-polling, the library provides three additional ways of
 monitoring an input event:
 
-##### The wait_for_edge() function
+#### The wait_for_edge() function
 
-This function blocks the calling thread until the provided edge(s) is
-detected. The function can be called as follows:
+This function blocks the calling thread until the specified edge is  
+detected. The function can be called as follows:  
 
 ```python
 GPIO.wait_for_edge(channel, GPIO.RISING)
 ```
 
-The second parameter specifies the edge to be detected and can be
-GPIO.RISING, GPIO.FALLING or GPIO.BOTH. If you only want to limit the wait
-to a specified amount of time, a timeout can be optionally set:
+The second parameter specifies the edge to detect and can be GPIO.RISING, GPIO.FALLING, or GPIO.BOTH. 
+To limit the wait to a specified amount of time, optionally set a timeout:  
 
 ```python
 # timeout is in seconds
@@ -313,10 +144,10 @@ GPIO.wait_for_edge(channel, GPIO.RISING, timeout=500)
 The function returns the channel for which the edge was detected or None if a
 timeout occurred.
 
-##### The event_detected() function
+#### The event_detected() function
 
-This function can be used to periodically check if an event occurred since the
-last call. The function can be set up and called as follows:
+This function periodically checks if an event occurred since the last call. 
+The function can be set up and called as follows:
 
 ```python
 # set rising edge detection on the channel
@@ -328,11 +159,11 @@ if GPIO.event_detected(channel):
 
 As before, you can detect events for GPIO.RISING, GPIO.FALLING or GPIO.BOTH.
 
-##### A callback function run when an edge is detected
+#### A callback function run when an edge is detected
 
-This feature can be used to run a second thread for callback functions. Hence,
-the callback function can be run concurrent to your main program in response
-to an edge. This feature can be used as follows:
+This feature runs a separate thread for callback functions, 
+allowing the callback to execute concurrently with your main program in response to an edge. 
+This feature can be used as follows:
 
 ```python
 # define callback function
@@ -343,7 +174,7 @@ def callback_fn(channel):
 GPIO.add_event_detect(channel, GPIO.RISING, callback=callback_fn)
 ```
 
-More than one callback can also be added if required as follows:
+You can also add multiple callbacks if required, as follows:
 
 ```python
 def callback_one(channel):
@@ -357,11 +188,10 @@ GPIO.add_event_callback(channel, callback_one)
 GPIO.add_event_callback(channel, callback_two)
 ```
 
-The two callbacks in this case are run sequentially, not concurrently since
-there is only thread running all callback functions.
+The callbacks run sequentially, not concurrently, since only one thread runs all callback functions.
 
-In order to prevent multiple calls to the callback functions by collapsing
-multiple events in to a single one, a debounce time can be optionally set:
+To prevent triggering the callback function multiple times, an optional debounce time can be set. 
+This collapses multiple events into a single event.
 
 ```python
 # bouncetime set in milliseconds
@@ -407,32 +237,9 @@ GPIO.gpio_function(channel)
 
 The function returns either GPIO.IN or GPIO.OUT.
 
-#### 11. PWM
-
-See `samples/simple_pwm.py` for details on how to use PWM channels.
-
-The Avular.GPIO library supports PWM only on pins with attached hardware PWM
-controllers. Unlike the RPi.GPIO library, the Avular.GPIO library does not
-implement Software emulated PWM. Jetson Nano supports 2 PWM channels, and
-Jetson AGX Xavier supports 3 PWM channels. Jetson TX1 and TX2 do not support
-any PWM channels.
-
-The system pinmux must be configured to connect the hardware PWM controlller(s)
-to the relevant pins. If the pinmux is not configured, PWM signals will not
-reach the pins! The Avular.GPIO library does not dynamically modify the pinmux
-configuration to achieve this. Read the L4T documentation for details on how to
-configure the pinmux.
-
 
 # Using the Avular GPIO library from a docker container
 The following describes how to use the Avular GPIO library from a docker container.
-
-## Building a docker image
-`samples/docker/Dockerfile` is a sample Dockerfile for the Avular GPIO library. The following command will build a docker image named `testimg` from it.
-
-```shell
-sudo docker image build -f samples/docker/Dockerfile -t testimg .
-```
 
 ## Running the container
 ### Basic options 
@@ -472,12 +279,9 @@ If you don't want to run the container in privilleged mode, you can directly pro
 -e JETSON_MODEL_NAME=[PUT_YOUR_JETSON_MODEL_NAME_HERE]
 ``` 
 
-You can get the proper value for this variable by running `samples/jetson_model.py` on the host or in previlleged mode.
-```shell
-# run on the host or in previlleged mode
-sudo python3 samples/jetson_model.py
-```
-
+The following model names are supported:
+- VERTEX_1_3
+- VERTEX_1_4 
 
 The following example will run `/bin/bash` from the container in non-privilleged mode. 
 
@@ -489,21 +293,6 @@ sudo docker container run -it --rm \
 testimg /bin/bash
 ```
 
-
-# Obtaining L4T Documentation
-
-The L4T documentation may be available in the following locations:
-
-* [Jetson Download Center](https://developer.nvidia.com/embedded/downloads);
-search for the "L4T Documentation" package.
-* [docs.nvidia.com](https://docs.nvidia.com/jetson/l4t/).
-
-Within the documentation, relevant topics may be found by searching for e.g.:
-* Hardware Setup.
-* Configuring the 40-Pin Expansion Header.
-* Jetson-IO.
-* Platform Adaptation and Bring-Up.
-* Pinmux Changes.
 
 # Creating a release
 To create a new release of the Avular.GPIO library, follow these steps:

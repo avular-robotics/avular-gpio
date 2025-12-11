@@ -30,12 +30,8 @@ print_help() {
 Usage: run_sample.sh <sample application>
 sample_application: simple_input.py
                     simple_output.py
-                    simple_pwm.py
-                    button_led.py
-                    button_event.py
-                    button_interrupt.py
-                    test_all_apis.py
-                    test_all_pins.py
+                    simple_interrupt.py
+                    simple_event.py
 EOF
     exit 1
 }

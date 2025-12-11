@@ -22,24 +22,25 @@
 import Avular.GPIO as GPIO
 import time
 
-pin = 31
+# Pin Definitions:
+pin = 'TOP_IO1'
 
-def on_falling(channel):
-    print("Callback.")
+def callback(channel):
+    print("Interrupt detected on pin {}".format(channel))
 
 def main():
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(pin, GPIO.IN)
+    # Pin Setup:
+    GPIO.setmode(GPIO.CVM)  # Named pin-numbering scheme
+    GPIO.setup(pin, GPIO.IN)  # set pin as an input pin
 
     # By default, the poll time is 0.2 seconds, too
-    GPIO.add_event_detect(pin, GPIO.FALLING, callback=on_falling, bouncetime=300, polltime=0.2)
+    GPIO.add_event_detect(pin, GPIO.FALLING, callback=callback, bouncetime=10, polltime=0.2)
     print("Starting demo now! Press CTRL+C to exit")
     try:
         while True:
-            print("Main loop...")
-            time.sleep(5)
+            time.sleep(1)
     finally:
-        GPIO.cleanup()
+        GPIO.cleanup()  # cleanup all GPIOs
 
 if __name__ == '__main__':
     main()
