@@ -28,7 +28,7 @@
 
 import Avular.GPIO as GPIO
 
-# Pin Definitons:
+# Pin Definitions:
 pin = 'TOP_IO1'
 
 def main():

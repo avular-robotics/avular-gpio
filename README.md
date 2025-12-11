@@ -212,7 +212,7 @@ GPIO.add_event_detect(channel, GPIO.RISING, callback=callback_fn,
 polltime=1)
 ```
 
-If the edge detection is not longer required it can be removed as follows:
+If the edge detection is no longer required it can be removed as follows:
 
 ```python
 GPIO.remove_event_detect(channel)
@@ -227,7 +227,7 @@ least twice as much as the poll time.
 GPIO.remove_event_detect(channel, timeout=0.5)
 ```
 
-#### 10. Check function of GPIO channels
+### 10. Check function of GPIO channels
 
 This feature allows you to check the function of the provided GPIO channel:
 
@@ -238,11 +238,11 @@ GPIO.gpio_function(channel)
 The function returns either GPIO.IN or GPIO.OUT.
 
 
-# Using the Avular GPIO library from a docker container
+## Using the Avular GPIO library from a docker container
 The following describes how to use the Avular GPIO library from a docker container.
 
-## Running the container
-### Basic options 
+### Running the container
+#### Basic options 
 You should map `/dev` into the container to access to the GPIO pins.
 So you need to add these options to `docker container run` command.
 
@@ -256,11 +256,11 @@ and if you want to use GPU from the container you also need to add these options
 ```
 
 
-### Running the container in privilleged mode
+#### Running the container in privileged mode
 The library determines the jetson model by checking `/proc/device-tree/compatible` and `/proc/device-tree/chosen` by default.
-These paths only can be mapped into the container in privilleged mode.
+These paths only can be mapped into the container in privileged mode.
 
-The following example will run `/bin/bash` from the container in privilleged mode. 
+The following example will run `/bin/bash` from the container in privileged mode. 
 ```shell
 sudo docker container run -it --rm \
 --runtime=nvidia --gpus all \
@@ -271,8 +271,8 @@ sudo docker container run -it --rm \
 testimg /bin/bash
 ```
 
-### Running the container in non-privilleged mode
-If you don't want to run the container in privilleged mode, you can directly provide your jetson model name to the library through the environment variable `JETSON_MODEL_NAME`:  
+#### Running the container in non-privileged mode
+If you don't want to run the container in privileged mode, you can directly provide your jetson model name to the library through the environment variable `JETSON_MODEL_NAME`:  
  
 ```shell
 # ex> -e JETSON_MODEL_NAME=JETSON_NANO
@@ -280,10 +280,11 @@ If you don't want to run the container in privilleged mode, you can directly pro
 ``` 
 
 The following model names are supported:
+
 - VERTEX_1_3
 - VERTEX_1_4 
 
-The following example will run `/bin/bash` from the container in non-privilleged mode. 
+The following example will run `/bin/bash` from the container in non-privileged mode. 
 
 ```shell
 sudo docker container run -it --rm \
@@ -294,7 +295,7 @@ testimg /bin/bash
 ```
 
 
-# Creating a release
+## Creating a release
 To create a new release of the Avular.GPIO library, follow these steps:
 
 1. Update the version number in `setup.py`
