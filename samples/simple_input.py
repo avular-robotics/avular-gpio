@@ -23,13 +23,13 @@ import Avular.GPIO as GPIO
 import time
 
 # Pin Definitions
-input_pin = 18  # BCM pin 18, BOARD pin 12
+input_pin = 'TOP_IO1'
 
 def main():
     prev_value = None
 
     # Pin Setup:
-    GPIO.setmode(GPIO.BCM)  # BCM pin-numbering scheme from Raspberry Pi
+    GPIO.setmode(GPIO.CVM)  # Named pin-numbering scheme
     GPIO.setup(input_pin, GPIO.IN)  # set pin as an input pin
     print("Starting demo now! Press CTRL+C to exit")
     try:

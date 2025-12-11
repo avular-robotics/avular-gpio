@@ -18,22 +18,34 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
+#
+# EXAMPLE SETUP
+# Connect a button to pin 18 and GND, a pull-up resistor connecting the button
+# to 3V3 and an LED connected to pin 12. The application performs the same
+# function as the button_led.py but performs a blocking wait for the button
+# press event instead of continuously checking the value of the pin in order to
+# reduce CPU usage.
 
 import Avular.GPIO as GPIO
-import time
 
-pin = 32
+# Pin Definitions:
+pin = 'TOP_IO1'
 
 def main():
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(pin, GPIO.OUT)
-    for i in range(5):
-        ts = 0.1
-        GPIO.output(pin, GPIO.HIGH)
-        time.sleep(ts)
-        GPIO.output(pin, GPIO.LOW)
-        time.sleep(ts)
-    GPIO.cleanup()
+    # Pin Setup:
+    GPIO.setmode(GPIO.CVM)  # Named pin-numbering scheme
+    GPIO.setup(pin, GPIO.IN) # button pin set as input
+
+    print("Starting demo now! Press CTRL+C to exit")
+    try:
+        while True:
+            print("Waiting for button event")
+            GPIO.wait_for_edge(pin, GPIO.FALLING)
+            
+            # event received when button pressed
+            print("Event detected!")
+    finally:
+        GPIO.cleanup()  # cleanup all GPIOs
 
 if __name__ == '__main__':
     main()
