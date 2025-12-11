@@ -1,4 +1,10 @@
-avular-gpio (3.2.0-1) UNRELEASED; urgency=medium
+avular-gpio (3.2.1-1) jammy; urgency=medium
+
+  * Updated the documentation
+
+ -- Robbert-Jan de Jager <rj.jager@avular.com>  Thu, 11 Dec 2025 16:12:22 +0100
+
+avular-gpio (3.2.0-1) jammy; urgency=medium
 
   * Rename pins to more consistent
 
