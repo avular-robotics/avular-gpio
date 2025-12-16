@@ -58,9 +58,9 @@ jobs:
           path: |
             avular-gpio/dist/
 
-  release-stable:
+  release-internal:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, micro-linux]
     strategy:
       matrix:
         environment: [stable, nightly, unstable]
@@ -69,15 +69,7 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y lintian
 
-      - name: Checkout private CI actions
-        uses: actions/checkout@v4
-        with:
-          repository: avular-robotics/avular_ci
-          ref: main
-          path: avular_ci
-          token: ${{ secrets.AVULAR_CI_READ_TOKEN }}
-
-      - uses: ./avular_ci/actions/upload-packages
+      - uses: avular-robotics/avular_ci/actions/upload-packages@latest
         with:
           artifact-name: avular-gpio-packages
           feed: "humble-${{ matrix.environment }}"
@@ -88,7 +80,7 @@ jobs:
       - name: Remove downloaded artifacts
         run: rm -rf artifacts
 
-      - uses: ./avular_ci/actions/upload-packages
+      - uses: avular-robotics/avular_ci/actions/upload-packages@latest
         with:
           artifact-name: avular-gpio-packages
           feed: "${{ matrix.environment }}"
