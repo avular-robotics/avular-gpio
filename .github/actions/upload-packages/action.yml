@@ -97,3 +97,142 @@ runs:
       run: |
         if [ -n "${{ inputs.upload-url }}" ]; then
           echo "::warning::The upload-url input is deprecated. Please use feed, distro, and component inputs instead."
+          
+          # Validate the URL format
+          url="${{ inputs.upload-url }}"
+          if ! echo "$url" | grep -q '^https://packages\.avular\.dev/debian-packages/upload/[^/]\+/[^/]\+$'; then
+            echo "::error::Invalid upload-url format. Expected: https://packages.avular.dev/debian-packages/upload/{feed}/{component}"
+            echo "Received: $url"
+            exit 1
+          fi
+          
+          # Extract feed and component from the deprecated upload-url
+          # Expected format: https://packages.avular.dev/debian-packages/upload/{feed}/{component}
+          
+          # Extract the path part after /upload/
+          path_after_upload=$(echo "$url" | sed 's|.*/upload/||')
+          
+          # Split by '/' to get feed and component
+          feed=$(echo "$path_after_upload" | cut -d'/' -f1)
+          component=$(echo "$path_after_upload" | cut -d'/' -f2)
+          
+          # Use defaults if extraction fails
+          feed=${feed:-"humble-unstable"}
+          component=${component:-"main"}
+          distro="jammy"  # Default since URL doesn't contain distro
+          
+          echo "Extracted from URL - Feed: $feed, Component: $component, Distro: $distro (default)"
+        else
+          # Use the new input parameters
+          feed="${{ inputs.feed }}"
+          distro="${{ inputs.distro }}"
+          component="${{ inputs.component }}"
+
+          if [ -z "$distro" ]; then
+            # Default distro if not specified
+            source /etc/os-release
+            if [ -n "$VERSION_CODENAME" ]; then
+              distro="$VERSION_CODENAME"
+            else
+              echo "::warning::Distro not specified and /etc/os-release not available, using default: jammy"
+              distro="jammy"
+            fi
+          fi
+          
+          echo "Using inputs - Feed: $feed, Distro: $distro, Component: $component"
+        fi
+
+        # Validate that feed, distro, and component contain only safe characters
+        if ! echo "$feed" | grep -q '^[a-zA-Z0-9_-]*$'; then
+          echo "::error::Feed '$feed' contains invalid characters. Only alphanumeric, underscore, and dash are allowed."
+          exit 1
+        fi
+
+        if ! echo "$distro" | grep -q '^[a-zA-Z0-9_-]*$'; then
+          echo "::error::Distro '$distro' contains invalid characters. Only alphanumeric, underscore, and dash are allowed."
+          exit 1
+        fi
+
+        if ! echo "$component" | grep -q '^[a-zA-Z0-9_-]*$'; then
+          echo "::error::Component '$component' contains invalid characters. Only alphanumeric, underscore, and dash are allowed."
+          exit 1
+        fi
+
+        # Additional validation for empty values
+        if [ -z "$feed" ]; then
+          echo "::error::Feed cannot be empty"
+          exit 1
+        fi
+
+        if [ -z "$distro" ]; then
+          echo "::error::Distro cannot be empty"
+          exit 1
+        fi
+
+        if [ -z "$component" ]; then
+          echo "::error::Component cannot be empty"
+          exit 1
+        fi
+
+        # Determine feed type and construct appropriate upload URL
+        legacy_feeds="development focal humble-unstable humble-nightly humble-stable"
+        if echo " $legacy_feeds " | grep -q " $feed "; then
+          # Legacy feed type
+          upload_url="https://packages.avular.dev/debian-packages/upload/${feed}/${component}"
+          feed_type="legacy"
+          echo "Using legacy feed type for feed: $feed"
+        else
+          # Debian feed type
+          upload_url="https://packages.avular.dev/debian/${feed}/upload/${distro}/${component}"
+          feed_type="debian"
+          echo "Using debian feed type for feed: $feed"
+        fi
+
+        # Export for use in subsequent steps
+        echo "upload_url=$upload_url" >> $GITHUB_OUTPUT
+        echo "feed=$feed" >> $GITHUB_OUTPUT
+        echo "distro=$distro" >> $GITHUB_OUTPUT
+        echo "component=$component" >> $GITHUB_OUTPUT
+        echo "feed_type=$feed_type" >> $GITHUB_OUTPUT
+
+        echo "Final upload URL: $upload_url"
+        echo "Feed type: $feed_type"
+
+    - name: patch debian packages
+      shell: bash
+      run: |
+        # Some generated debian packages have issues that need to be patched before uploading
+        # For example, cpack generated packages often have empty lines in the control file.
+        find "$PACKAGES_DIR" -name '*.deb' -print0 | while IFS= read -r -d '' file; do
+          echo "Patching $file"
+          if ! "${GITHUB_ACTION_PATH}/patch-deb.sh" "$file"; then
+            echo "::error::Failed to patch $file"
+            exit 1
+          fi
+        done
+
+    - name: Upload packages to binary repo
+      shell: bash
+      run: |
+        find "$PACKAGES_DIR" -name '*.deb' -print0 | while IFS= read -r -d '' file; do
+          file_name=$(basename "$file")
+          # URL-encode the filename to handle special characters
+          encoded_file_name=$(printf '%s' "$file_name" | sed 's/ /%20/g; s/!/%21/g; s/"/%22/g; s/#/%23/g; s/\$/%24/g; s/&/%26/g; s/'\''/%27/g; s/(/%28/g; s/)/%29/g; s/\*/%2A/g; s/+/%2B/g; s/,/%2C/g; s/:/%3A/g; s/;/%3B/g; s/=/%3D/g; s/?/%3F/g; s/@/%40/g; s/\[/%5B/g; s/]/%5D/g')
+          
+          echo "Uploading $file_name to feed: ${{ steps.params.outputs.feed }} (${{ steps.params.outputs.feed_type }}), distro: ${{ steps.params.outputs.distro }}, component: ${{ steps.params.outputs.component }}"
+          
+          if [ "${{ steps.params.outputs.feed_type }}" = "legacy" ]; then
+            # Legacy upload method - filename in URL path
+            upload_url="${{ steps.params.outputs.upload_url }}/${encoded_file_name}"
+          else
+            # Debian upload method - upload to base URL without filename in path
+            upload_url="${{ steps.params.outputs.upload_url }}"
+          fi
+
+          if ! curl --fail --user "api:${{ inputs.api-key }}" \
+            --upload-file "$file" \
+            "$upload_url"; then
+            echo "::error::Failed to upload $file_name"
+            exit 1
+          fi
+        done
