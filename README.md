@@ -283,6 +283,7 @@ The following model names are supported:
 
 - VERTEX_1_3
 - VERTEX_1_4 
+- JOLT01_1
 
 The following example will run `/bin/bash` from the container in non-privileged mode. 
 
