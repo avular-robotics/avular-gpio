@@ -69,7 +69,7 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y lintian
 
-      - uses: avular-robotics/avular_ci/actions/upload-packages@latest
+      - uses: ./.github/actions/upload-packages
         with:
           artifact-name: avular-gpio-packages
           feed: "humble-${{ matrix.environment }}"
@@ -80,7 +80,7 @@ jobs:
       - name: Remove downloaded artifacts
         run: rm -rf artifacts
 
-      - uses: avular-robotics/avular_ci/actions/upload-packages@latest
+      - uses: ./.github/actions/upload-packages
         with:
           artifact-name: avular-gpio-packages
           feed: "${{ matrix.environment }}"

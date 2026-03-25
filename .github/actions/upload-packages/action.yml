@@ -1,0 +1,99 @@
+name: "upload-packages"
+description: "Upload Debian packages to the binary repository"
+
+inputs:
+  artifact-name:
+    description: "Name of the artifact containing the Debian packages to upload"
+    required: false
+  packages-path:
+    description: "Path to directory containing Debian packages to upload (alternative to artifact-name)"
+    required: false
+  upload-url:
+    description: "[DEPRECATED] URL to upload the packages to. Use feed, distro, and component inputs instead."
+    required: false
+  feed:
+    description: "The package feed name"
+    required: false
+    default: "humble-unstable"
+  distro:
+    description: "The distribution name"
+    required: false
+    default: ""
+  component:
+    description: "The component name"
+    required: false
+    default: "main"
+  api-key:
+    description: "API key for uploading packages to the binary repository"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Validate inputs
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.artifact-name }}" ] && [ -n "${{ inputs.packages-path }}" ]; then
+          echo "::error::Cannot specify both artifact-name and packages-path. Please use only one."
+          exit 1
+        fi
+
+        if [ -z "${{ inputs.artifact-name }}" ] && [ -z "${{ inputs.packages-path }}" ]; then
+          echo "::error::Must specify either artifact-name or packages-path."
+          exit 1
+        fi
+
+    - name: Download artifacts
+      if: ${{ inputs.artifact-name != '' }}
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: artifacts/
+
+    - name: Setup packages directory
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.artifact-name }}" ]; then
+          # Using artifact - packages are in artifacts/
+          packages_dir="artifacts"
+          echo "Using downloaded artifact packages from: $packages_dir"
+        else
+          # Using packages-path - use directory directly
+          packages_path="${{ inputs.packages-path }}"
+          if [ ! -d "$packages_path" ]; then
+            echo "::error::Packages directory '$packages_path' does not exist"
+            exit 1
+          fi
+          
+          packages_dir="$packages_path"
+          echo "Using packages from directory: $packages_dir"
+        fi
+
+        echo "PACKAGES_DIR=$packages_dir" >> $GITHUB_ENV
+
+    - name: Check if packages directory exists and list packages
+      shell: bash
+      run: |
+        if [ ! -d "$PACKAGES_DIR" ]; then
+          echo "::error::Packages directory '$PACKAGES_DIR' does not exist"
+          exit 1
+        fi
+
+        # Check if we have any .deb files
+        package_count=$(find "$PACKAGES_DIR" -name "*.deb" | wc -l)
+        if [ "$package_count" -eq 0 ]; then
+          echo "::error::No Debian packages (.deb files) found in '$PACKAGES_DIR'"
+          exit 1
+        fi
+
+        echo "Found $package_count Debian packages:"
+        find "$PACKAGES_DIR" -name "*.deb" | while read -r file; do
+          echo "  - $(basename "$file")"
+        done
+
+    - name: Determine upload parameters
+      id: params
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.upload-url }}" ]; then
+          echo "::warning::The upload-url input is deprecated. Please use feed, distro, and component inputs instead."
