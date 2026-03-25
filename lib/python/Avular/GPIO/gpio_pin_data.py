@@ -33,8 +33,9 @@ JETSON_ORIN_NX='JETSON_ORIN_NX'
 JETSON_ORIN_NANO='JETSON_ORIN_NANO'
 VERTEX_1_3='VERTEX_1_3'
 VERTEX_1_4='VERTEX_1_4'
+JOLT01_1='JOLT01_1'
 
-JETSON_MODELS = [JETSON_TX1, JETSON_TX2, CLARA_AGX_XAVIER, JETSON_TX2_NX, JETSON_XAVIER, JETSON_NANO, JETSON_NX, JETSON_ORIN, JETSON_ORIN_NX, JETSON_ORIN_NANO, VERTEX_1_3, VERTEX_1_4]
+JETSON_MODELS = [JETSON_TX1, JETSON_TX2, CLARA_AGX_XAVIER, JETSON_TX2_NX, JETSON_XAVIER, JETSON_NANO, JETSON_NX, JETSON_ORIN, JETSON_ORIN_NX, JETSON_ORIN_NANO, VERTEX_1_3, VERTEX_1_4, JOLT01_1]
 
 TEGRA234_BASE = {
     'A': 0,
@@ -133,6 +134,35 @@ VERTEX_1_4_PIN_DEFS = [
 
 compats_vertex_1_4 = (
     "avular,vertex-1-4",
+)
+
+JOLT01_1_PIN_DEFS = [
+    (TEGRA234_BASE['CC'] + 0, 'PCC.00', "tegra234-gpio-aon", 1, 1, 'HUB3_RST', 'GP06_SPI2_CLK', None, None),
+    (TEGRA234_BASE['CC'] + 1, 'PCC.01', "tegra234-gpio-aon", 2, 2, 'GPS_PPS', 'GP07_SPI2_MISO', None, None),
+    (TEGRA234_BASE['CC'] + 2, 'PCC.02', "tegra234-gpio-aon", 3, 3, 'CAM_RST', 'GP08_SPI2_MOSI', None, None),
+    (TEGRA234_BASE['CC'] + 3, 'PCC.03', "tegra234-gpio-aon", 4, 4, 'CAM3_TRIG', 'GP09_SPI2_CS_N', None, None),
+    (TEGRA234_BASE['Y'] + 4, 'PY.04', "tegra234-gpio", 5, 5, 'CAN_TERM', 'GP40_SPI3_CS1_N', None, None),
+    (TEGRA234_BASE['Z'] + 3, 'PZ.03', "tegra234-gpio", 6, 6, 'FRONT_IO2', 'GP47_SPI1_CLK', None, None),
+    (TEGRA234_BASE['Z'] + 4, 'PZ.04', "tegra234-gpio", 7, 7, 'FRONT_12V_EN', 'GP48_SPI1_MISO', None, None),
+    (TEGRA234_BASE['Z'] + 5, 'PZ.05', "tegra234-gpio", 8, 8, 'FRONT_IO1', 'GP49_SPI1_MOSI', None, None),
+    (TEGRA234_BASE['Z'] + 6, 'PZ.06', "tegra234-gpio", 9, 9, 'FRONT_12V_PG', 'GP50_SPI1_CS0_N', None, None),
+    (TEGRA234_BASE['P'] + 6, 'PP.06', "tegra234-gpio", 10, 10, 'HUB2_RST', 'GP58', None, None),
+    (TEGRA234_BASE['Q'] + 5, 'PQ.05', "tegra234-gpio", 11, 11, 'CAM1_TRIG', 'GP65', None, None),
+    (TEGRA234_BASE['G'] + 6, 'PG.06', "tegra234-gpio", 12, 12, 'TOP_IO1', 'GP113_PWM7', '32e0000.pwm', 0),
+    (TEGRA234_BASE['H'] + 6, 'PH.06', "tegra234-gpio", 13, 13, 'CAM2_TRIG', 'GP121_UART4_CTS_N', None, None),
+    (TEGRA234_BASE['AC'] + 0, 'PAC.00', "tegra234-gpio", 14, 14, 'CAM0_TRIG', 'GP161_SPI5_CLK', None, None),
+    (TEGRA234_BASE['AC'] + 6, 'PAC.06', "tegra234-gpio", 15, 15, 'WATCHDOG', 'GP167', None, None),
+    (TEGRA234_BASE['A'] + 4, 'PA.04', "tegra234-gpio", 16, 16, 'EXT_12V_PG', 'GP206_DAP4_CLK', None, None),
+    (TEGRA234_BASE['A'] + 5, 'PA.05', "tegra234-gpio", 17, 17, 'EXT_12V_EN', 'GP207_DAP4_DOUT', None, None),
+    (TEGRA234_BASE['A'] + 7, 'PA.07', "tegra234-gpio", 19, 19, 'USB_EN', 'GP209_DAP4_FS', None, None),
+    (TEGRA234_BASE['R'] + 4, 'PR.04', "tegra234-gpio", 20, 20, 'TOP_RTS', 'GP72_UART1_RTS_N', None, None),
+    (TEGRA234_BASE['R'] + 5, 'PR.05', "tegra234-gpio", 21, 21, 'TOP_CTS', 'GP73_UART1_CTS_N', None, None),
+    (TEGRA234_BASE['I'] + 1, 'PI.01', "tegra234-gpio", 22, 22, 'CAM_EN', 'GP124', None, None),
+]
+
+compats_jolt01_1 = (
+    "avular,jolt01-1",
+    "avular,vertex-1-5"
 )
 
 JETSON_ORIN_NX_PIN_DEFS = [
@@ -572,7 +602,18 @@ jetson_gpio_data = {
             'P1_REVISION': 1,
             'RAM': '16384M',
             'REVISION': 'Unknown',
-            'TYPE': 'VERTEX_1_3',
+            'TYPE': 'VERTEX_1_4',
+            'MANUFACTURER': 'NVIDIA',
+            'PROCESSOR': 'ARM A78'
+        }
+    ),
+    JOLT01_1: (
+        JOLT01_1_PIN_DEFS,
+        {
+            'P1_REVISION': 1,
+            'RAM': '16384M',
+            'REVISION': 'Unknown',
+            'TYPE': 'JOLT01_1',
             'MANUFACTURER': 'NVIDIA',
             'PROCESSOR': 'ARM A78'
         }
@@ -705,6 +746,8 @@ def get_model():
             return VERTEX_1_3
         elif matches(compats_vertex_1_4):
             return VERTEX_1_4
+        elif matches(compats_jolt01_1):
+            return JOLT01_1
 
     # get model info from the environment variables for docker containers
     model_name = os.environ.get("JETSON_MODEL_NAME")
