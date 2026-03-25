@@ -1,3 +1,9 @@
+avular-gpio (3.3.1-1) jammy; urgency=medium
+
+  * Upload packages to internal hosting
+
+ -- Robbert-Jan de Jager <rj.jager@avular.com>  Wed, 25 Mar 2026 17:53:16 +0100
+
 avular-gpio (3.3.0-1) jammy; urgency=medium
 
   * Add support for the Jolt01
